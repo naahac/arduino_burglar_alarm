@@ -1,8 +1,11 @@
 #include <LiquidCrystal.h>
 #include <IRremote.h>
 
+
 #define IR_RCV 10
 #define BUZZER 10
+#define BUTTON_PIN 8
+#define DEBOUNCE_TIME 5
 
 //LCD constants
 #define CONTRAST_PIN 6
@@ -25,6 +28,13 @@ decode_results results;
 
 volatile int count = 0;
 
+void pciSetup(byte pin)
+{
+    *digitalPinToPCMSK(pin) |= bit (digitalPinToPCMSKbit(pin));  // enable pin
+    PCIFR  |= bit (digitalPinToPCICRbit(pin)); // clear any outstanding interrupt
+    PCICR  |= bit (digitalPinToPCICRbit(pin)); // enable interrupt for the group
+}
+
 void setupIR(){
   // In case the interrupt driver crashes on setup, give a clue
   // to the user what's going on.
@@ -43,7 +53,6 @@ void setupLCD(){
 }
 
 void setupTimer(){
-   cli(); //Disable global interrupts
    TCCR1A = 0;
    TCCR1B = 0;
    OCR1A = 15625; //Set the count corresponding to 1 second
@@ -51,15 +60,22 @@ void setupTimer(){
    TCCR1B |= (1 << CS10);
    TCCR1B |= (1 << CS12); //Prescale at 1024
    TIMSK1 |= (1<< OCIE1A); //Enable CTC interrupt
-   sei(); //Enable Global Interrupts
+}
+
+void test(){
+  Serial.println("test interrupt");  
 }
 
 void setup() {
   Serial.begin(9600);
+  pinMode(BUTTON_PIN, INPUT);
+  cli(); //Disable global interrupts
   setupTimer();
+  sei(); //Enable Global Interrupts
   setupLCD();
   setupIR();
   //pinMode(BUZZER,OUTPUT);
+  pciSetup(A0);
 }
 
 void loop() {
@@ -71,5 +87,18 @@ ISR (TIMER1_COMPA_vect){
   lcd.print(count);
   //Serial.println(count);
   count++;
+}
+
+ISR (PCINT1_vect) // handle pin change interrupt for A0 to A5 here
+{
+   test();
+}  
+
+ boolean debounceRead(byte input){
+   if(digitalRead(input)){
+      delay(DEBOUNCE_TIME);
+      return digitalRead(input);
+   }
+   return LOW;
 }
 
