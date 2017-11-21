@@ -23,6 +23,7 @@
 //const int rs = 12, en = 11, d4 = 5, d5 = 4, d6 = 3, d7 = 2;
 LiquidCrystal lcd(RS, EN, D4, D5, D6, D7);
 
+//THIS IS A NEW COMMENT
 IRrecv irrecv(IR_RCV);
 decode_results results;
 
