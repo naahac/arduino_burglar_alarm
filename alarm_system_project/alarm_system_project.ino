@@ -2,6 +2,9 @@
 #include <IRremote.h>
 
 
+
+
+
 #define IR_RCV 10
 #define BUZZER 10
 #define BUTTON_PIN 8
@@ -23,8 +26,14 @@
 //const int rs = 12, en = 11, d4 = 5, d5 = 4, d6 = 3, d7 = 2;
 LiquidCrystal lcd(RS, EN, D4, D5, D6, D7);
 
+//THIS IS A NEW COMMENT
 IRrecv irrecv(IR_RCV);
 decode_results results;
+
+int curr_menu_index = 0;
+int menuLength = 5;
+char menu[5][16] = {"Set time", "Alarm Zone 1", "Alarm Zone 2", "Alarm Zone 3", "Alarm Zone 4"};
+
 
 volatile int count = 0;
 
@@ -42,7 +51,10 @@ void setupLCD(){
   // set up the LCD's number of columns and rows:
   lcd.begin(16, 2);
   // Print a message to the LCD.
-  lcd.print("Wellcome!");
+  lcd.print("hh/mm - dd/mm/yy");
+  lcd.setCursor(0,1);
+  lcd.print(menu[0]);
+  
 }
 
 void setupTimer(){
@@ -70,13 +82,19 @@ void setup() {
   //pinMode(BUZZER,OUTPUT);
 }
 
+
+
 void loop() {
   decodeIR();
+  //tone(BUZZER,1000);
 }
+
 
 ISR (TIMER1_COMPA_vect){
   lcd.setCursor(0, 1);
+  /*
   lcd.print(count);
+  */
   //Serial.println(count);
   count++;
 }
