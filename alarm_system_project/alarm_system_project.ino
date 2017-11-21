@@ -28,13 +28,6 @@ decode_results results;
 
 volatile int count = 0;
 
-void pciSetup(byte pin)
-{
-    *digitalPinToPCMSK(pin) |= bit (digitalPinToPCMSKbit(pin));  // enable pin
-    PCIFR  |= bit (digitalPinToPCICRbit(pin)); // clear any outstanding interrupt
-    PCICR  |= bit (digitalPinToPCICRbit(pin)); // enable interrupt for the group
-}
-
 void setupIR(){
   // In case the interrupt driver crashes on setup, give a clue
   // to the user what's going on.
@@ -75,7 +68,6 @@ void setup() {
   setupLCD();
   setupIR();
   //pinMode(BUZZER,OUTPUT);
-  pciSetup(A0);
 }
 
 void loop() {

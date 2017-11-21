@@ -196,25 +196,52 @@ void clearRow(int r) {
   }
 }
 
-int current_menu_index = 0;
-
-char menu[5][10] = {"Menu0", "Menu1", "Menu2", "Menu3", "Menu4"};
+int curr_menu_index = 0;
+int menuLength = 5;
+char menu[5][16] = {"Set time", "Entry/Exit", "Analog sensor", "Digital sensor", "Cont.monitoring"};
 
 void decodeIR() {
   if (irrecv.decode(&results)) {
-    //clearRow(0);
     Serial.println(results.value);
     switch (results.value) {
       case IR_0:
         Serial.println("Menu 0");
+        clearRow(0);
         lcd.setCursor(0, 0);
         lcd.print(menu[0]);
         break;
-      case IR_1: lcd.print(menu[1]); break;
-      case IR_2: lcd.print(menu[2]); break;
+      case IR_1:
+        clearRow(0);
+        lcd.setCursor(0, 0);
+        lcd.print(menu[1]);
+        break;
+      case IR_2:
+        clearRow(0);
+
+        lcd.setCursor(0, 0);
+
+        lcd.print(menu[2]);
+        break;
       case IR_3: lcd.print(menu[3]); break;
       case IR_4: lcd.print(menu[4]); break;
-        //case IR_MINUS: noTone(BUZZER); break;
+      case IR_MINUS:
+        if (curr_menu_index > 0)
+        {
+          curr_menu_index--;
+          clearRow(0);
+          lcd.setCursor(0, 0);
+          lcd.print(menu[curr_menu_index]);
+        }
+        break;
+      case IR_PLUS:
+        if (curr_menu_index < menuLength - 1)
+        {
+          curr_menu_index++;
+          clearRow(0);
+          lcd.setCursor(0, 0);
+          lcd.print(menu[curr_menu_index]);
+        }
+        break;
     }
     irrecv.resume(); // Receive the next value
   }
