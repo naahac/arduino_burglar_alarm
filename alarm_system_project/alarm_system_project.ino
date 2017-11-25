@@ -55,6 +55,9 @@ decode_results results;
 
 zone zones[4];
 
+int curr_menuZone_index = 0;
+int menuZoneLength = 6;
+char menuZone0 [6][16] = {"Set Type", "Password", "wait_time", "analog_threshold", "active_high_low","high_to_low"};
 int curr_menu_index = 0;
 int menuLength = 5;
 char menu[5][16] = {"Set time", "Alarm Zone 1", "Alarm Zone 2", "Alarm Zone 3", "Alarm Zone 4"};
@@ -76,10 +79,11 @@ void setupLCD() {
   // set up the LCD's number of columns and rows:
   lcd.begin(16, 2);
   // Print a message to the LCD.
+
   lcd.print("hh/mm - dd/mm/yy");
-  lcd.setCursor(0,1);
+  lcd.setCursor(0, 1);
   lcd.print(menu[0]);
-  
+
 }
 
 void setupTimer() {
@@ -123,7 +127,7 @@ void loop() {
 ISR (TIMER1_COMPA_vect) {
   lcd.setCursor(0, 1);
   /*
-  lcd.print(count);
+    lcd.print(count);
   */
   //Serial.println(count);
   count++;

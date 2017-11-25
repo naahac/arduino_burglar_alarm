@@ -22,17 +22,17 @@ void checkForAlarm() {
 }
 
 void checkAnalog(zone zone, int value) {
-  
+
 }
 
 void checkEntryExit(zone zone, bool value) {
-  if(!value){
-    Serial.println("Entry/Exit ALARM!");
-   }
+  if (!value) {
+    //Serial.println("Entry/Exit ALARM!");
+  }
 }
 
 void checkDigital(zone zone, int value) {
-    
+
 }
 
 void checkContinuous(zone zone, bool value) {
