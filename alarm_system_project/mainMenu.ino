@@ -18,7 +18,7 @@ void mainMENU() {
         checkMENU();
       }
       else if (curr_menu_index == 2) {
-        menu_number = MENU_ZONE3;
+        menu_number = MENU_ZONE2;
 
         checkMENU();
       }

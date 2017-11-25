@@ -1,10 +1,11 @@
+
 void menuZone(int zoneNumber) {
   clearRow(0);
   clearRow(1);
   lcd.setCursor(0, 0);
   lcd.print (zoneNumber);
   lcd.setCursor(0, 1);
-  lcd.print(menuZone0[0]);
+  lcd.print(menuZones[0]);
   Serial.println(zoneNumber);
 
   switch (results.value) {
@@ -23,21 +24,23 @@ void menuZone(int zoneNumber) {
       lcd.print(menu[0]);
       break;
     case IR_MINUS:
-      moveThroughZoneMenuMinus();
+      clearRow(1);
+       moveThroughZoneMenuMinus();
       break;
     case IR_PLUS:
-      moveThroughZoneMenuPlus();
+       clearRow(1);
+       moveThroughZoneMenuPlus();
       break;
   }
 }
 
   void moveThroughZoneMenuMinus() {
-    if (curr_menuZone_index < menuZoneLength - 1)
+    if (curr_menuZone_index > 0)
     {
       curr_menuZone_index--;
       clearRow(1);
       lcd.setCursor(0, 1);
-      lcd.print(menu[curr_menuZone_index]);
+      lcd.print(menuZones[curr_menuZone_index]);
 
     }
 
@@ -49,7 +52,7 @@ void menuZone(int zoneNumber) {
       curr_menuZone_index++;
       clearRow(1);
       lcd.setCursor(0, 1);
-      lcd.print(menu[curr_menuZone_index]);
+      lcd.print(menuZones[curr_menuZone_index]);
 
     }
 

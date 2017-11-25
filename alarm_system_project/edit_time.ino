@@ -227,7 +227,7 @@ void setDate(){
     setDate();
 <<<<<<< HEAD
   }
-*/
+
 =======
 }
 
@@ -276,3 +276,5 @@ void printDateTime(){
     printDate();
 }
 >>>>>>> c68eb819d68154b26ec75487a3a3253e2c06fc35
+
+*/

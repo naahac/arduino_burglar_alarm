@@ -55,7 +55,7 @@ zone zones[4];
 
 int curr_menuZone_index = 0;
 int menuZoneLength = 6;
-char menuZone0 [6][16] = {"Set Type", "Password", "wait_time", "analog_threshold", "active_high_low","high_to_low"};
+char menuZones[6][16] = {"Set Type", "Password", "wait_time", "analog_t", "active_h_l","high_to_l"};
 int curr_menu_index = 0;
 int menuLength = 5;
 char menu[5][16] = {"Set time", "Alarm Zone 1", "Alarm Zone 2", "Alarm Zone 3", "Alarm Zone 4"};
@@ -118,7 +118,7 @@ void setup() {
 
 void loop() {
   decodeIR();
-  checkForAlarm();
+//  checkForAlarm();
   //tone(BUZZER,1000);
 }
 

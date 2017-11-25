@@ -59,16 +59,16 @@ void checkMENU() {
     menuDateTime();
   }
   else if (menu_number == MENU_ZONE1) {
-    menuZone(0);
-  }
-  else if (menu_number == MENU_ZONE2) {
     menuZone(1);
   }
-  else if (menu_number == MENU_ZONE3) {
+  else if (menu_number == MENU_ZONE2) {
     menuZone(2);
   }
-  else if (menu_number == MENU_ZONE4) {
+  else if (menu_number == MENU_ZONE3) {
     menuZone(3);
+  }
+  else if (menu_number == MENU_ZONE4) {
+    menuZone(4);
   }
 }
 
