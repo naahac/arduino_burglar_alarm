@@ -5,8 +5,8 @@
 // when cancel while editing set back to previous time
 // if approved while editing (jump to next || finish and approve)
 
-#define DEFAULT_TIME 0
-#define DEFAULT_DATE 0
+#define DEFAULT_TIME 4862
+#define DEFAULT_DATE 2389
 #define DAYS_OF_YEAR 365
 
 int curent_time = DEFAULT_TIME;
@@ -19,46 +19,64 @@ char months[12] = {31,30,31,28,31,30,31,31,30,31,30,31};
 
 
 char getIRInput(){
-  while(true)
-  if(irrecv.decode(&results)){
-    switch(results.value){
-      case IR_0:
-        return 0;  
-      case IR_1:
-        return 1;  
-      case IR_2:
-        return 2;  
-      case IR_3:
-        return 3;  
-      case IR_4:
-        return 4;  
-      case IR_5:
-        return 5;  
-      case IR_6:
-        return 6;  
-      case IR_7:
-        return 7;  
-      case IR_8:
-        return 8;
-      case IR_9:
-        return 9;
-      //check for interuption
-    }    
+  Serial.println("Gimme input");
+  while(true){
+    if(irrecv.decode(&results)){
+      int input_number = -1;
+      switch(results.value){
+        case IR_0:
+          input_number = 0;
+          break;  
+        case IR_1:
+          input_number = 1;
+          break;  
+        case IR_2:
+          input_number = 2;
+          break;   
+        case IR_3:
+          input_number = 3;
+          break;  
+        case IR_4:
+          input_number = 4;
+          break;  
+        case IR_5:
+          input_number = 5;
+          break;  
+        case IR_6:
+          input_number = 6;
+          break;  
+        case IR_7:
+          input_number = 7;
+          break;  
+        case IR_8:
+          input_number = 8;
+          break;  
+        case IR_9:
+          input_number = 9;
+          break;  
+        //check for interuption
+      }
+      if(input_number!=-1){
+          //irrecv.resume();
+          return input_number;
+      }
+    }
   }
 }
 
 
 char digitToChar(char num){
+    
+    //Serial.println(num+48);
     return num+48; // gets a ascii sign of a number  
 }
 
 
 
-char* numberToCharArray(char num){
-  char arr[2];
-  arr[0] = digitToChar(num/10);
-  arr[1] = digitToChar(num%10);
-  return arr;
+void numberToCharArray(char* arr,char num) {
+  arr[0] = digitToChar(num / 10);
+  arr[1] = digitToChar(num % 10);
+  arr[2] = '\0';
 }
 
 void printCharArray(char arr[],char row,char column){
@@ -70,19 +88,19 @@ char getTimeInput(char row, char column){  //row and column are used for setting
   //gets input of 2 integers
   char input,num;
   
-  
   num = getIRInput();
   lcd.setCursor(row,column);
   lcd.print(digitToChar(num));
   
   input = 10*num;
-  
+  Serial.println(input);
   num = getIRInput();
   lcd.setCursor(row,column+1);
   lcd.print(digitToChar(num));
   
   input +=num;
-  
+
+  Serial.println(input);
   return input;
 }
 
@@ -97,7 +115,9 @@ void setHours(){
     if(input<0)
       input = 0;
 
-    printCharArray(numberToCharArray(input),0,0);
+    char arr[3];
+    numberToCharArray(arr, input);
+    printCharArray(arr, 0, 0); 
 }
 
 void setMinutes(){
@@ -108,10 +128,12 @@ void setMinutes(){
         input = getTimeInput(3,0);
     }while(input>=0 && input < 60);
 
-    printCharArray(numberToCharArray(input),3,0);
-
+    char arr[3];
+    numberToCharArray(arr, input);
+    printCharArray(arr, 3, 0);
 }
 
+/*
 void setSeconds(){
     char input;
     //checks format
@@ -119,40 +141,47 @@ void setSeconds(){
         input = getTimeInput(5,0);
     }while(input>=0 && input < 60);
 
-    printCharArray(numberToCharArray(input),5,0);
+    char arr[3];
+    numberToCharArray(arr, input);
+    printCharArray(arr, 5, 0);
 }
+*/
 
 void setTime(){
 
     setHours();
     setMinutes();
-    setSeconds();  
+    //setSeconds();  
 }
 
 void setDay(char month){
     char input;
     //checks format
     do{
-        input = getTimeInput(9,0);
+        input = getTimeInput(8,0);
     }while(input>=0 && input < months[month]);
 
     new_time += input; 
 
-    printCharArray(numberToCharArray(input),9,0);
+    char arr[3];
+    numberToCharArray(arr, input);
+    printCharArray(arr, 8, 0);
 }
 
 char setMonth(){
     char input;
     //checks format
     do{
-        input = getTimeInput(12,0);
+        input = getTimeInput(11,0);
     }while(input>=1 && input < 13);
 
     //adds days of previous months of this year
     for(char i=0; i<input-1; i++)
         new_time += months[i];
 
-    printCharArray(numberToCharArray(input),12,0);
+    char arr[3];
+    numberToCharArray(arr, input);
+    printCharArray(arr, 11, 0);
     return input;
 }
 
@@ -160,13 +189,16 @@ void setYear(){
     char input;
     //checks format
     do{
-        input = getTimeInput(15,0);
+        input = getTimeInput(14,0);
     }while(input>=0 && input < 100);
 
     //adds days of year
     new_time += input*DAYS_OF_YEAR;
 
-    printCharArray(numberToCharArray(input),15,0);
+    char arr[3];
+    numberToCharArray(arr, input);
+    printCharArray(arr, 14, 0);
+    
 }
 
 
@@ -208,22 +240,34 @@ char getYear(){
 
 
 void printTime(){
-    char timeString[8];
-    sprintf(timeString, "%s//%s//%s",numberToCharArray(curent_time/60*60),numberToCharArray((curent_time/60)%60),numberToCharArray((curent_time%60)));
+    char timeString[5];
+    char time_hours[3],time_minutes[3],time_seconds[3];
+    numberToCharArray(time_hours,(char)((int)curent_time / (60 * 60)));
+    numberToCharArray(time_minutes, (curent_time / 60) % 60);
+    //numberToCharArray(time_seconds,curent_time % 60);
+
+    //sprintf(timeString, "%s/%s/%s",time_hours,time_minutes,time_seconds);
+    sprintf(timeString, "%s:%s",time_hours,time_minutes);
+    //Serial.println(timeString);
     printCharArray(timeString,0,0);
     //return timeString;
 }
 
 void printDate(){
     char dateString[8];
-    sprintf(dateString, "%s//%s//%s",numberToCharArray(getDay()),numberToCharArray(getMonth()),numberToCharArray(getYear()));
-    printCharArray(dateString,9,0);
+    char day[3],month[3],year[3];
+    numberToCharArray(day,getDay());
+    numberToCharArray(month, getMonth());
+    numberToCharArray(year,getYear());
+
+    sprintf(dateString, "%s/%s/%s",day,month,year);
+    printCharArray(dateString,8,0);
     //return dateString;
 }
 
 void printDateTime(){
     printTime();
-    lcd.setCursor(8,0);
-    lcd.print("-");
+    lcd.setCursor(5,0);
+    lcd.print(" - ");
     printDate();
 }

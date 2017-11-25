@@ -27,7 +27,7 @@ void checkAnalog(zone zone, int value) {
 
 void checkEntryExit(zone zone, bool value) {
   if(!value){
-    Serial.println("Entry/Exit ALARM!");
+    //Serial.println("Entry/Exit ALARM!");
    }
 }
 

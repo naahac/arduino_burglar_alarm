@@ -75,6 +75,8 @@ void setupLCD() {
   lcd.begin(16, 2);
   // Print a message to the LCD.
   lcd.print("hh/mm - dd/mm/yy");
+  //printDateTime();
+
   lcd.setCursor(0,1);
   lcd.print(menu[0]);
   
