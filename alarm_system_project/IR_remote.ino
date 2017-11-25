@@ -38,9 +38,6 @@ void clearRow(int r) {
   }
 }
 
-
-
-
 void decodeIR() {
 
   if (irrecv.decode(&results)) {
@@ -67,7 +64,11 @@ void checkMENU(){
     }
 
     else if (menu_number== MENU_ZONE1){
-      
+      clearRow(0);
+      clearRow(1);
+      lcd.setCursor(0,0);
+      lcd.print ("ZONE 1 MENU");
+      Serial.println("zone1");
     }
     
     else if (menu_number== MENU_ZONE2){
@@ -95,6 +96,26 @@ void mainMENU(){
          checkMENU();
          
         }
+        else if (curr_menu_index == 1){
+         menu_number = MENU_ZONE1;
+         
+         checkMENU();
+        }
+        else if (curr_menu_index == 2){
+         menu_number = MENU_ZONE3;
+         
+         checkMENU();
+        }
+        else if (curr_menu_index == 3){
+         menu_number = MENU_ZONE3;
+         
+         checkMENU();
+        }
+        else if (curr_menu_index == 4){
+         menu_number = MENU_ZONE4;
+         
+         checkMENU();
+        }
         break;
        
       
@@ -121,6 +142,9 @@ void mainMENU(){
     }
      
 }
+
+
+
 
 
 
