@@ -1,8 +1,6 @@
 #include <LiquidCrystal.h>
 #include <IRremote.h>
-
-
-
+#include <stdio.h>
 
 
 #define IR_RCV 10
