@@ -61,12 +61,17 @@ typedef struct zone {
   //byte alwaysHigh;
 };
 
+typedef struct alarm_log {
+  int time;
+  char message[20];
+};
 
 //Variables for date and time
 volatile int current_time = DEFAULT_TIME;
 int current_date = DEFAULT_DATE;
 
-
+//EEPROM
+int eeAdress = 0;
 
 // initialize the library by associating any needed LCD interface pin
 // with the arduino pin number it is connected to
@@ -100,7 +105,7 @@ void setZones() {
 
   zones[2].pin = PIN_ZONE_2;
   zones[2].type = DIGITAL;
-  
+
   zones[3].pin = PIN_ZONE_4;
   zones[3].type = CONTINUOUS;
 }
@@ -135,14 +140,6 @@ void setupLCD() {
   lcd.begin(16, 2);
   // Print a message to the LCD.
   setMainMenu();
-}
-
-void setMainMenu() {
-  lcd.setCursor(0, 0);
-  printDateTime();
- 
-  lcd.setCursor(0, 1);
-  lcd.print(menu[0]);
 }
 
 void setupTimer() {
@@ -183,9 +180,9 @@ void loop() {
 
 ISR (TIMER1_COMPA_vect) {
   current_time++;
-  if(current_time>=24*60*60){
+  if (current_time >= 24 * 60 * 60) {
     current_date++;
-    current_time=0;
+    current_time = 0;
   }
   increaseEntryExitTimer();
 }

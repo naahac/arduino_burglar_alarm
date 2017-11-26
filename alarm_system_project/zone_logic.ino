@@ -169,6 +169,10 @@ void enterPIN() {
   }
 }
 
+void saveLogToEEPROM(zone *zone){
+  
+  }
+
 void increaseEntryExitTimer() {
   for (int i = 0; i < 4; i++) {
     switch (zones[i].type) {

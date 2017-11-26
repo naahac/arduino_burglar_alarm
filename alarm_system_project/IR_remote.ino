@@ -34,6 +34,15 @@
 
 int menu_number = MENU_MAIN;
 
+void setMainMenu() {
+  lcd.setCursor(0, 0);
+  printDateTime();
+  
+  lcd.setCursor(0, 1);
+  lcd.print(menu[0]);
+
+  menu_number = MENU_MAIN;
+}
 
 void clearRow(int r) {
   lcd.setCursor (0, r);
