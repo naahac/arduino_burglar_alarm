@@ -1,7 +1,7 @@
 #include <LiquidCrystal.h>
 #include <IRremote.h>
 #include <stdio.h>
-
+#include <EEPROM.h>
 
 #define IR_RCV 10
 #define DEBOUNCE_TIME 5
@@ -83,7 +83,7 @@ zone zones[4];
 void setZones() {
   //zones[0].pin = 10;
   //zones[0].type = ANALOG;
-
+  
   zones[1].pin = A5;
   zones[1].type = ENTRY_EXIT;
   zones[1].password[0] = '1';
@@ -178,6 +178,9 @@ void loop() {
 
 ISR (TIMER1_COMPA_vect) {
   current_time++;
+
+  //refresh date-time text - if it is shown
+  
   if(current_time>=24*60*60){
     current_date++;
     current_time=0;

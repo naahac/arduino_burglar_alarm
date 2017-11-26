@@ -6,9 +6,6 @@
 // if approved while editing (jump to next || finish and approve)
 
 
-
-
-
 int new_time;
 int new_date;
 
