@@ -135,7 +135,6 @@ void setupLCD() {
 
 void setMainMenu() {
   lcd.setCursor(0, 0);
-  lcd.print("hh/mm - dd/mm/yy");
   printDateTime();
  
   lcd.setCursor(0, 1);
@@ -169,12 +168,7 @@ void setup() {
   setupLCD();
   setupIR();
   setZones();
-<<<<<<< HEAD
-  setDateTime();
-  //pinMode(BUZZER,OUTPUT);
-=======
   setAlarms();
->>>>>>> origin/master
 }
 
 void loop() {
@@ -183,21 +177,12 @@ void loop() {
 }
 
 ISR (TIMER1_COMPA_vect) {
-<<<<<<< HEAD
-  lcd.setCursor(0, 1);
-  /*
-    lcd.print(count);
-  */
-  //Serial.println(count);
   current_time++;
   if(current_time>=24*60*60){
     current_date++;
     current_time=0;
   }
-=======
-  count++;
   increaseEntryExitTimer();
->>>>>>> origin/master
 }
 
 boolean debounceRead(byte input) {
