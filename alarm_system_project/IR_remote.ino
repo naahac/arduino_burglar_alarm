@@ -43,32 +43,52 @@ void decodeIR() {
   if (irrecv.decode(&results)) {
     Serial.println(results.value);
     Serial.println(menu_number);
-    checkMENU();
-
+    if (isAlarmTriggered) {
+      enterPIN();
+    } else if(!checkForEntry()) {
+      checkMENU();
+    }
     irrecv.resume(); // Receive the next value
   }
+}
 
+bool checkForEntry() {
+  for (int i = 0; i < 4; i++) {
+    switch (zones[i].type) {
+      case ENTRY_EXIT:
+        if (zones[i].isTriggered == 1) {
+            enterPIN();
+            return true;
+        }
+        break;
+    }
+  }
+}
+
+void enterPIN() {
+  
 }
 
 void checkMENU() {
-
-  if (menu_number == MENU_MAIN) {
-    mainMENU();
-  }
-  else if (menu_number == MENU_DATETIME) {
-    menuDateTime();
-  }
-  else if (menu_number == MENU_ZONE1) {
-    menuZone(1);
-  }
-  else if (menu_number == MENU_ZONE2) {
-    menuZone(2);
-  }
-  else if (menu_number == MENU_ZONE3) {
-    menuZone(3);
-  }
-  else if (menu_number == MENU_ZONE4) {
-    menuZone(4);
+  switch (menu_number) {
+    case MENU_MAIN:
+      mainMENU();
+      break;
+    case MENU_DATETIME:
+      menuDateTime();
+      break;
+    case MENU_ZONE1:
+      menuZone(1);
+      break;
+    case MENU_ZONE2:
+      menuZone(2);
+      break;
+    case MENU_ZONE3:
+      menuZone(3);
+      break;
+    case MENU_ZONE4:
+      menuZone(4);
+      break;
   }
 }
 

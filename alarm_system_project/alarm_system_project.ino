@@ -4,9 +4,11 @@
 
 
 #define IR_RCV 10
-#define BUZZER 10
-#define BUTTON_PIN 8
 #define DEBOUNCE_TIME 5
+
+//Alarm constants
+#define BUZZER 10
+#define LED_PIN 8
 
 //LCD constants
 #define CONTRAST_PIN 6
@@ -25,21 +27,24 @@
 #define CONTINUOUS 4
 
 typedef struct zone {
-  int pin;
-  int type;
+  int pin = 0;
+  int type = 0;
+  byte isTriggered = 0;
 
   //ENTRY_EXIT PARAMETERS
-  int password;
-  int wait_time;
+  char password[4] = {'1','2','3','4'};
+  int entryTime = 30;
+  int exitTime = 30;
+  volatile int timer = 0;
 
   //ANALOG PARAMETERS
-  int analog_threshold;
+  int analogThreshold = 0;
 
   //DIGITAL PARAMETERS
-  bool active_high_low;
+  byte highToLow = 1;
 
   //CONTINUOUS MONITORING PARAMETERS
-  bool high_to_low;
+  byte alwaysHigh;
 };
 
 // initialize the library by associating any needed LCD interface pin
@@ -51,11 +56,32 @@ LiquidCrystal lcd(RS, EN, D4, D5, D6, D7);
 IRrecv irrecv(IR_RCV);
 decode_results results;
 
+byte isAlarmTriggered = 0;
+byte isAlarmTurnedOn = 1;
+char enteredPIN[4];
 zone zones[4];
 
+void setZones() {
+  zones[0].pin = 10;
+  zones[0].type = ANALOG;
+
+  zones[1].pin = A5;
+  zones[1].type = ENTRY_EXIT;
+  //zones[1].password = {'1','2','3','4'};
+  //zones[1].entryTime = 30;
+  zones[1].exitTime = 30;
+
+  zones[2].pin = A4;
+  zones[2].type = CONTINUOUS;
+  /*zones[1] = { .pin = A4, .type = DIGITAL };
+    zones[2] = { .pin = A5, .type = ENTRY_EXIT, .password = 1234, .entryTime = 30, .exitTime = 30};
+    zones[3] = { .pin = 10, .type = CONTINUOUS };*/
+}
+
+//Menu variables
 int curr_menuZone_index = 0;
 int menuZoneLength = 6;
-char menuZones[6][16] = {"Set Type", "Password", "wait_time", "analog_t", "active_h_l","high_to_l"};
+char menuZones[6][16] = {"Set Type", "Password", "wait_time", "analog_t", "active_h_l", "high_to_l"};
 int curr_menu_index = 0;
 int menuLength = 5;
 char menu[5][16] = {"Set time", "Alarm Zone 1", "Alarm Zone 2", "Alarm Zone 3", "Alarm Zone 4"};
@@ -94,41 +120,32 @@ void setupTimer() {
   TIMSK1 |= (1 << OCIE1A); //Enable CTC interrupt
 }
 
-void setZones() {
-  zones[0] = { .pin = 10, .type = ANALOG };
-  zones[1] = { .pin = 8, .type = DIGITAL };
-  zones[2] = { .pin = 10, .type = ENTRY_EXIT };
-  zones[3] = { .pin = 10, .type = CONTINUOUS };
+void setAlarms() {
+  //pinMode(BUZZER,OUTPUT);
+  pinMode(LED_PIN, OUTPUT);
 }
 
 void setup() {
   Serial.begin(9600);
-  pinMode(BUTTON_PIN, INPUT);
   pinMode(8, INPUT);
+  pinMode(A5, INPUT);
   cli(); //Disable global interrupts
   setupTimer();
   sei(); //Enable Global Interrupts
   setupLCD();
   setupIR();
   setZones();
-  //pinMode(BUZZER,OUTPUT);
+  setAlarms();
 }
-
-
 
 void loop() {
   decodeIR();
-//  checkForAlarm();
-  //tone(BUZZER,1000);
+  checkForAlarm();
 }
 
 ISR (TIMER1_COMPA_vect) {
-  lcd.setCursor(0, 1);
-  /*
-    lcd.print(count);
-  */
-  //Serial.println(count);
   count++;
+  increaseEntryExitTimer();
 }
 
 boolean debounceRead(byte input) {
