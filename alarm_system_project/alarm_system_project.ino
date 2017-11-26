@@ -79,9 +79,14 @@ void setZones() {
 }
 
 //Menu variables
+int curr_menuSetType_index = 0;
+char zoneTypes [4][16] = {"ENTRY_EXIT","ANALOG","DIGITAL","CONTINUOUS"};
+int zoneTypesLength = 4;
+
 int curr_menuZone_index = 0;
 int menuZoneLength = 6;
 char menuZones[6][16] = {"Set Type", "Password", "wait_time", "analog_t", "active_h_l", "high_to_l"};
+
 int curr_menu_index = 0;
 int menuLength = 5;
 char menu[5][16] = {"Set time", "Alarm Zone 1", "Alarm Zone 2", "Alarm Zone 3", "Alarm Zone 4"};

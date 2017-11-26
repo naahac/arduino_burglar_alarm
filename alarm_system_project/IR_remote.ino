@@ -25,10 +25,18 @@
 #define  MENU_ZONE2 3
 #define  MENU_ZONE3 4
 #define  MENU_ZONE4 5
+#define  MENU_ZONESUB1 6
+#define  MENU_ZONESUB2 7
+#define  MENU_ZONESUB3 8
+#define  MENU_ZONESUB4 9
+#define  MENU_ZONESUB5 10
+#define  MENU_ZONESUB6 11
+
 
 
 
 int menu_number = MENU_MAIN;
+int menuZone_number = MENU_ZONESUB1;
 
 void clearRow(int r) {
   lcd.setCursor (0, r);
@@ -89,6 +97,29 @@ void checkMENU() {
       break;
     case MENU_ZONE4:
       menuZone(4);
+      break;
+  }
+}
+
+void checkZoneSubMENU() {
+  switch (menuZone_number) {
+    case MENU_ZONESUB1:
+     setTypeMenu();
+      break;
+    case MENU_ZONESUB2:
+      
+      break;
+    case MENU_ZONESUB3:
+      
+      break;
+    case MENU_ZONESUB4:
+      
+      break;
+    case MENU_ZONESUB5:
+      
+      break;
+    case MENU_ZONESUB6:
+      
       break;
   }
 }
