@@ -3,23 +3,24 @@ void checkForAlarm() {
     switch (zones[i].type) {
       case ENTRY_EXIT:
         //Serial.println("CHECKING ENTRY_EXIT");
-        if (isAlarmTurnedOn)
+        if (isAlarmTurnedOn && zones[i].isTriggered != 1)
           checkEntryExit(&zones[i], digitalRead(zones[i].pin));
         break;
       case ANALOG:
         //Serial.println("CHECKING ANALOG");
-        if (isAlarmTurnedOn)
+        if (isAlarmTurnedOn && zones[i].isTriggered != 1)
           checkAnalog(&zones[i], analogRead(zones[i].pin));
         break;
       case DIGITAL:
         //Serial.println("CHECKING DIGITAL");
-        if (isAlarmTurnedOn)
+        if (isAlarmTurnedOn && zones[i].isTriggered != 1)
           checkDigital(&zones[i], digitalRead(zones[i].pin));
         break;
       case CONTINUOUS:
         //Serial.println("CHECKING CONTINUOUS");
         //We don't have to check if the alarm is turned on for continuous zone
-        checkContinuous(&zones[i], digitalRead(zones[i].pin));
+        if(zones[i].isTriggered != 1)
+          checkContinuous(&zones[i], digitalRead(zones[i].pin));
         break;
     }
   }
@@ -32,7 +33,7 @@ void checkAnalog(zone *zone, int value) {
 void checkEntryExit(zone *zone, int value) {
   //TODO - if triggered -> start timer -> enable user to enter PIN
   //        if timer runs out sound the alarm
-  Serial.print("timer: "); Serial.print(zone -> timer); Serial.println(zone -> entryTime);
+  //Serial.print("timer: "); Serial.print(zone -> timer); Serial.println(zone -> entryTime);
   if (zone -> isTriggered == 1 && zone -> timer >= zone -> entryTime) {
     //if door is opened and timer is more than entry time trigger alarm
     zone -> timer = 0;
@@ -52,7 +53,7 @@ void checkDigital(zone *zone, int value) {
 }
 
 void checkContinuous(zone *zone, bool value) {
-  if ((zone -> alwaysHigh == 1 && value == LOW) || (zone -> alwaysHigh == 0 && value == HIGH)) {
+  if ((zone -> highToLow == 1 && value == LOW) || (zone -> highToLow == 0 && value == HIGH)) {
     triggerAlarm();
   }
 }

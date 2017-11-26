@@ -44,7 +44,7 @@ typedef struct zone {
   byte highToLow = 1;
 
   //CONTINUOUS MONITORING PARAMETERS
-  byte alwaysHigh;
+  //byte alwaysHigh;
 };
 
 // initialize the library by associating any needed LCD interface pin
@@ -62,8 +62,8 @@ char enteredPIN[4];
 zone zones[4];
 
 void setZones() {
-  zones[0].pin = 10;
-  zones[0].type = ANALOG;
+  //zones[0].pin = 10;
+  //zones[0].type = ANALOG;
 
   zones[1].pin = A5;
   zones[1].type = ENTRY_EXIT;
@@ -72,7 +72,7 @@ void setZones() {
   zones[1].exitTime = 30;
 
   zones[2].pin = A4;
-  zones[2].type = CONTINUOUS;
+  zones[2].type = DIGITAL;
   /*zones[1] = { .pin = A4, .type = DIGITAL };
     zones[2] = { .pin = A5, .type = ENTRY_EXIT, .password = 1234, .entryTime = 30, .exitTime = 30};
     zones[3] = { .pin = 10, .type = CONTINUOUS };*/
@@ -140,7 +140,7 @@ void setup() {
 
 void loop() {
   decodeIR();
-  checkForAlarm();
+  //checkForAlarm();
 }
 
 ISR (TIMER1_COMPA_vect) {

@@ -63,10 +63,11 @@ bool checkForEntry() {
         break;
     }
   }
+  return false;
 }
 
 void enterPIN() {
-  
+  //TODO enter pin
 }
 
 void checkMENU() {
