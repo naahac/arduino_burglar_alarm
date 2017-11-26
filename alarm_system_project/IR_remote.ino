@@ -18,17 +18,22 @@
 #define  IR_REW     0xff22dd
 #define  IR_FF      0xff02fd
 
-
 #define  MENU_MAIN 0
 #define  MENU_DATETIME 1
 #define  MENU_ZONE1 2
 #define  MENU_ZONE2 3
 #define  MENU_ZONE3 4
 #define  MENU_ZONE4 5
-
+#define  MENU_ZONESUB1 6
+#define  MENU_ZONESUB2 7
+#define  MENU_ZONESUB3 8
+#define  MENU_ZONESUB4 9
+#define  MENU_ZONESUB5 10
+#define  MENU_ZONESUB6 11
 
 
 int menu_number = MENU_MAIN;
+
 
 void clearRow(int r) {
   lcd.setCursor (0, r);
@@ -39,38 +44,81 @@ void clearRow(int r) {
 }
 
 void decodeIR() {
-
   if (irrecv.decode(&results)) {
     Serial.println(results.value);
     Serial.println(menu_number);
-    checkMENU();
-
+    if (isAlarmTurnedOn) {
+      enterPIN();
+    } else {
+      switch (results.value) {
+        case IR_MODE:
+          activateAlarm();
+          break;
+        default:
+          checkMENU();
+          break;
+      }
+    }
     irrecv.resume(); // Receive the next value
   }
+}
 
+bool checkForEntry() {
+  for (int i = 0; i < 4; i++) {
+    switch (zones[i].type) {
+      case ENTRY_EXIT:
+        if (zones[i].isTriggered == 1) {
+          enterPIN();
+          return true;
+        }
+        break;
+    }
+  }
+  return false;
 }
 
 void checkMENU() {
-
-  if (menu_number == MENU_MAIN) {
-    mainMENU();
-  }
-  else if (menu_number == MENU_DATETIME) {
-    menuDateTime();
-  }
-  else if (menu_number == MENU_ZONE1) {
-    menuZone(1);
-  }
-  else if (menu_number == MENU_ZONE2) {
-    menuZone(2);
-  }
-  else if (menu_number == MENU_ZONE3) {
-    menuZone(3);
-  }
-  else if (menu_number == MENU_ZONE4) {
-    menuZone(4);
+  switch (menu_number) {
+    case MENU_MAIN:
+      mainMENU();
+      break;
+    case MENU_DATETIME:
+      menuDateTime();
+      break;
+    case MENU_ZONE1:
+      menuZone(1);
+      Serial.println(menu_number);
+      break;
+    case MENU_ZONE2:
+      menuZone(2);
+      break;
+    case MENU_ZONE3:
+      menuZone(3);
+      break;
+    case MENU_ZONE4:
+      menuZone(4);
+      break;
+    case MENU_ZONESUB1:
+     setTypeMenu();
+      break;
+    case MENU_ZONESUB2:
+     
+      break;
+     case MENU_ZONESUB3:
+     
+      break;
+     case MENU_ZONESUB4:
+    
+      break;
+      case MENU_ZONESUB5:
+    
+      break;
+      case MENU_ZONESUB6:
+     
+      break;
   }
 }
+
 
 
 

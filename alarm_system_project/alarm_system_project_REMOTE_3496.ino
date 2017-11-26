@@ -29,14 +29,6 @@
 #define DIGITAL 3
 #define CONTINUOUS 4
 
-
-#define DEFAULT_TIME 4862
-#define DEFAULT_DATE 2389
-#define DAYS_OF_YEAR 365
-#define DATETIME_ROW 0
-
-
-
 typedef struct zone {
   int pin = 0;
   int type = 0;
@@ -57,13 +49,6 @@ typedef struct zone {
   //CONTINUOUS MONITORING PARAMETERS
   //byte alwaysHigh;
 };
-
-
-//Variables for date and time
-volatile int current_time = DEFAULT_TIME;
-int current_date = DEFAULT_DATE;
-
-
 
 // initialize the library by associating any needed LCD interface pin
 // with the arduino pin number it is connected to
@@ -136,8 +121,6 @@ void setupLCD() {
 void setMainMenu() {
   lcd.setCursor(0, 0);
   lcd.print("hh/mm - dd/mm/yy");
-  printDateTime();
- 
   lcd.setCursor(0, 1);
   lcd.print(menu[0]);
 }
@@ -169,12 +152,7 @@ void setup() {
   setupLCD();
   setupIR();
   setZones();
-<<<<<<< HEAD
-  setDateTime();
-  //pinMode(BUZZER,OUTPUT);
-=======
   setAlarms();
->>>>>>> origin/master
 }
 
 void loop() {
@@ -183,21 +161,8 @@ void loop() {
 }
 
 ISR (TIMER1_COMPA_vect) {
-<<<<<<< HEAD
-  lcd.setCursor(0, 1);
-  /*
-    lcd.print(count);
-  */
-  //Serial.println(count);
-  current_time++;
-  if(current_time>=24*60*60){
-    current_date++;
-    current_time=0;
-  }
-=======
   count++;
   increaseEntryExitTimer();
->>>>>>> origin/master
 }
 
 boolean debounceRead(byte input) {
