@@ -47,7 +47,7 @@ void decodeIR() {
   if (irrecv.decode(&results)) {
     Serial.println(results.value);
     Serial.println(menu_number);
-    if (isAlarmTurnedOn) {
+    if (isAlarmTurnedOn || isAlarmTriggered) {
       enterPIN();
     } else {
       switch (results.value) {
