@@ -47,12 +47,11 @@ char analogThreshold[4];
 #define  MENU_ZONE2 3
 #define  MENU_ZONE3 4
 #define  MENU_ZONE4 5
-#define  MENU_ZONESUB1 6
-#define  MENU_ZONESUB2 7
-#define  MENU_ZONESUB3 8
-#define  MENU_ZONESUB4 9
-#define  MENU_ZONESUB5 10
-#define  MENU_ZONESUB6 11
+#define  MENU_ZONE_TYPE 6
+#define  MENU_PASSWORD 7
+#define  MENU_HIGH_LOW 8
+#define  MENU_ANALOG_THRESHOLD 9
+#define  MENU_WAIT_TIME 10
 
 typedef struct zone {
   int pin = 0;
@@ -82,6 +81,7 @@ typedef struct alarm_log {
 //Variables for date and time
 volatile long current_time = DEFAULT_TIME;
 long current_date = DEFAULT_DATE;
+long exitActivationTime = -1;
 
 //EEPROM
 int eeAdress = 0;
@@ -112,10 +112,10 @@ void setZones() {
 
   zones[1].pin = PIN_ZONE_1;
   zones[1].type = ENTRY_EXIT;
-  zones[1].password[0] = '1';
-  zones[1].password[1] = '2';
-  zones[1].password[2] = '3';
-  zones[1].password[3] = '4';*/
+  /*zones[1].password[0] = '1';
+    zones[1].password[1] = '2';
+    zones[1].password[2] = '3';
+    zones[1].password[3] = '4';*/
   zones[1].entryTime = 10;
   zones[1].exitTime = 10;
 
@@ -157,7 +157,7 @@ void setupLCD() {
   lcd.begin(16, 2);
   // Print a message to the LCD.
   setMainMenu();
-} 
+}
 
 void setupTimer() {
   TCCR1A = 0;
@@ -193,6 +193,10 @@ void setup() {
 void loop() {
   decodeIR();
   checkForAlarm();
+  if (exitActivationTime <= current_time && exitActivationTime != -1) {
+    exitActivationTime = -1;
+    activateAlarm();
+  }
 }
 
 ISR (TIMER1_COMPA_vect) {
@@ -202,7 +206,7 @@ ISR (TIMER1_COMPA_vect) {
     current_date++;
     current_time = 0;
   }
-  if(menu_number==MENU_MAIN){
+  if (menu_number == MENU_MAIN && !isAlarmTurnedOn && !isAlarmTriggered) {
     printDateTime();
   }
   increaseEntryExitTimer();

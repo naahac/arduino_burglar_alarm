@@ -18,10 +18,6 @@
 #define  IR_REW     0xff22dd
 #define  IR_FF      0xff02fd
 
-
-
-
-
 void setMainMenu() {
   lcd.setCursor(0, 0);
   printDateTime();
@@ -49,7 +45,7 @@ void decodeIR() {
     } else {
       switch (results.value) {
         case IR_MODE:
-          activateAlarm();
+          startActivationTimer();
           break;
         default:
           checkMENU();

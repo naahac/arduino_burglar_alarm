@@ -92,6 +92,19 @@ void deactivateAlarm() {
   setMainMenu();
 }
 
+void startActivationTimer() {
+  long waittime = current_time + getExitTime();
+  Serial.print("wait: "); Serial.println(waittime);
+  exitActivationTime = waittime;
+}
+
+int getExitTime() {
+  for (int i = 0; i < 4; i++) {
+    if(zones[i].type == ENTRY_EXIT)
+      return zones[i].exitTime;
+  }
+}
+
 void activateAlarm() {
   isAlarmTurnedOn = 1;
   showPinEnterScreen();
