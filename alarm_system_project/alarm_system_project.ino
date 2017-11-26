@@ -143,14 +143,6 @@ void setupLCD() {
   setMainMenu();
 } 
 
-void setMainMenu() {
-  lcd.setCursor(0, 0);
-  printDateTime();
- 
-  lcd.setCursor(0, 1);
-  lcd.print(menu[0]);
-}
-
 void setupTimer() {
   TCCR1A = 0;
   TCCR1B = 0;
