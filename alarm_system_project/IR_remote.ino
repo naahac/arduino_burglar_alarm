@@ -18,15 +18,12 @@
 #define  IR_REW     0xff22dd
 #define  IR_FF      0xff02fd
 
-
 #define  MENU_MAIN 0
 #define  MENU_DATETIME 1
 #define  MENU_ZONE1 2
 #define  MENU_ZONE2 3
 #define  MENU_ZONE3 4
 #define  MENU_ZONE4 5
-
-
 
 int menu_number = MENU_MAIN;
 
@@ -39,14 +36,20 @@ void clearRow(int r) {
 }
 
 void decodeIR() {
-
   if (irrecv.decode(&results)) {
     Serial.println(results.value);
     Serial.println(menu_number);
-    if (isAlarmTriggered) {
+    if (isAlarmTurnedOn) {
       enterPIN();
-    } else if(!checkForEntry()) {
-      checkMENU();
+    } else {
+      switch (results.value) {
+        case IR_MODE:
+          activateAlarm();
+          break;
+        default:
+          checkMENU();
+          break;
+      }
     }
     irrecv.resume(); // Receive the next value
   }
@@ -57,17 +60,13 @@ bool checkForEntry() {
     switch (zones[i].type) {
       case ENTRY_EXIT:
         if (zones[i].isTriggered == 1) {
-            enterPIN();
-            return true;
+          enterPIN();
+          return true;
         }
         break;
     }
   }
   return false;
-}
-
-void enterPIN() {
-  //TODO enter pin
 }
 
 void checkMENU() {

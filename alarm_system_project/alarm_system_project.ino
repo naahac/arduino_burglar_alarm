@@ -8,11 +8,14 @@
 
 //Alarm constants
 #define BUZZER 10
-#define LED_PIN 8
+#define ALARM_LED_PIN 8
+#define ACTIVE_LED_PIN 9
+#define PIN_ZONE_1 A5
+#define PIN_ZONE_2 A4
 
 //LCD constants
 #define CONTRAST_PIN 6
-#define CONTRAST_VALUE 20
+#define CONTRAST_VALUE 80
 #define RS 12
 #define EN 11
 #define D4 5
@@ -32,7 +35,7 @@ typedef struct zone {
   byte isTriggered = 0;
 
   //ENTRY_EXIT PARAMETERS
-  char password[4] = {'1','2','3','4'};
+  char password[5] = "1234";
   int entryTime = 30;
   int exitTime = 30;
   volatile int timer = 0;
@@ -57,8 +60,9 @@ IRrecv irrecv(IR_RCV);
 decode_results results;
 
 byte isAlarmTriggered = 0;
-byte isAlarmTurnedOn = 1;
-char enteredPIN[4];
+byte isAlarmTurnedOn = 0;
+char enteredPin[5];
+int enteredPinIndex = 0;
 zone zones[4];
 
 void setZones() {
@@ -67,9 +71,12 @@ void setZones() {
 
   zones[1].pin = A5;
   zones[1].type = ENTRY_EXIT;
-  //zones[1].password = {'1','2','3','4'};
-  //zones[1].entryTime = 30;
-  zones[1].exitTime = 30;
+  zones[1].password[0] = '1';
+  zones[1].password[1] = '2';
+  zones[1].password[2] = '3';
+  zones[1].password[3] = '4';
+  zones[1].entryTime = 10;
+  zones[1].exitTime = 10;
 
   zones[2].pin = A4;
   zones[2].type = DIGITAL;
@@ -103,11 +110,14 @@ void setupLCD() {
   // set up the LCD's number of columns and rows:
   lcd.begin(16, 2);
   // Print a message to the LCD.
+  setMainMenu();
+} 
 
+void setMainMenu() {
+  lcd.setCursor(0, 0);
   lcd.print("hh/mm - dd/mm/yy");
   lcd.setCursor(0, 1);
   lcd.print(menu[0]);
-
 }
 
 void setupTimer() {
@@ -122,13 +132,15 @@ void setupTimer() {
 
 void setAlarms() {
   //pinMode(BUZZER,OUTPUT);
-  pinMode(LED_PIN, OUTPUT);
+  pinMode(ALARM_LED_PIN, OUTPUT);
+  pinMode(ACTIVE_LED_PIN, OUTPUT);
+
+  pinMode(PIN_ZONE_1, INPUT);
+  pinMode(PIN_ZONE_2, INPUT);
 }
 
 void setup() {
   Serial.begin(9600);
-  pinMode(8, INPUT);
-  pinMode(A5, INPUT);
   cli(); //Disable global interrupts
   setupTimer();
   sei(); //Enable Global Interrupts
@@ -140,7 +152,7 @@ void setup() {
 
 void loop() {
   decodeIR();
-  //checkForAlarm();
+  checkForAlarm();
 }
 
 ISR (TIMER1_COMPA_vect) {
