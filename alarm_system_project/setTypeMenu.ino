@@ -11,9 +11,7 @@ void setTypeMenu() {
   switch (results.value) {
 
     case IR_EQ:
-      {
-     
-      }
+
       break;
     case IR_REW:
       //menu_number = MENU_MAIN;
