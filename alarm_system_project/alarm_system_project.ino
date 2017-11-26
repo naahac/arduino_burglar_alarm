@@ -1,6 +1,7 @@
 #include <LiquidCrystal.h>
 #include <IRremote.h>
 #include <stdio.h>
+#include <EEPROM.h>
 
 
 #define IR_RCV 10
@@ -37,6 +38,8 @@
 #define DAYS_OF_YEAR 365
 #define DATETIME_ROW 0
 
+char password[5] = "1234";
+char analogThreshold[4];
 
 #define  MENU_MAIN 0
 #define  MENU_DATETIME 1
@@ -68,14 +71,12 @@ typedef struct zone {
 
   //DIGITAL PARAMETERS
   byte highToLow = 0;
-
-  //CONTINUOUS MONITORING PARAMETERS
-  //byte alwaysHigh;
 };
 
 typedef struct alarm_log {
   int time;
-  char message[20];
+  int date;
+  int type;
 };
 
 //Variables for date and time
@@ -104,21 +105,21 @@ zone zones[4];
 int menu_number = MENU_MAIN;
 
 void setZones() {
-  zones[0].pin = PIN_ZONE_3;
+  zones[0].pin = PIN_ZONE_1;
   zones[0].type = ANALOG;
   zones[0].highToLow = 1;
   zones[0].analogThreshold = 500;
 
-  zones[1].pin = PIN_ZONE_1;
-  zones[1].type = DIGITAL;
-  zones[1].password[0] = '1';
+  zones[1].pin = PIN_ZONE_2;
+  zones[1].type = ENTRY_EXIT;
+  /*zones[1].password[0] = '1';
   zones[1].password[1] = '2';
   zones[1].password[2] = '3';
-  zones[1].password[3] = '4';
+  zones[1].password[3] = '4';*/
   zones[1].entryTime = 10;
   zones[1].exitTime = 10;
 
-  zones[2].pin = PIN_ZONE_2;
+  zones[2].pin = PIN_ZONE_3;
   zones[2].type = DIGITAL;
 
   zones[3].pin = PIN_ZONE_4;
@@ -126,15 +127,14 @@ void setZones() {
 }
 
 int arrayLevels[5];
-int stackIndex = 0;
 //Menu variables
 int curr_menuSetType_index = 0;
 char zoneTypes [4][16] = {"ENTRY_EXIT", "ANALOG", "DIGITAL", "CONTINUOUS"};
 int zoneTypesLength = 4;
 
 int curr_menuZone_index = 0;
-int menuZoneLength = 6;
-char menuZones[6][16] = {"Set Type", "Password", "wait_time", "analog_t", "active_h_l", "high_to_l"};
+int menuZoneLength = 5;
+char menuZones[5][16] = {"Set Type", "Password", "High/Low", "Analog T.", "Wait time"};
 
 int curr_menu_index = 0;
 int menuLength = 5;

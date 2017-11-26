@@ -2,7 +2,6 @@ void mainMENU() {
   switch (results.value) {
     case IR_EQ:
       arrayLevels[0]=MENU_MAIN;
-      stackIndex=1;
       switch (curr_menu_index) {
         case 0:
           menu_number = MENU_DATETIME;
@@ -13,22 +12,18 @@ void mainMENU() {
           initializeZoneMenu(1);
           Serial.println("test");
           Serial.println(menu_number);
-          
           break;
         case 2:
           menu_number = MENU_ZONE2;
           initializeZoneMenu(2);
-          
           break;
         case 3:
           menu_number = MENU_ZONE3;
-          initializeZoneMenu(3);
-          
+          initializeZoneMenu(3);     
           break;
         case 4:
           menu_number = MENU_ZONE4;
-          initializeZoneMenu(4);
-          
+          initializeZoneMenu(4);       
           break;
       }
       break;
