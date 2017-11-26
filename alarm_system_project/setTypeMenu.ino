@@ -1,18 +1,24 @@
+void initializeZoneSubMenu() {
+  clearRow(0);
+  clearRow(1);
+  lcd.setCursor(0, 0);
+  lcd.print ("ZONE SUB MENU");
+  lcd.setCursor(0, 1);
+  lcd.print(zoneTypes[0]);
+ 
+}
 void setTypeMenu() {
   switch (results.value) {
 
     case IR_EQ:
       {
-        clearRow(0);
-        clearRow(1);
-        lcd.setCursor(0, 0);
-        lcd.setCursor(0, 1);
+     
       }
       break;
     case IR_REW:
-      menu_number = MENU_MAIN;
-      curr_menuZone_index = 0;
-      void initializeZoneMenu(int zoneNumber);
+      //menu_number = MENU_MAIN;
+     //curr_menuZone_index = 0;
+      //void initializeZoneMenu(int zoneNumber);
       break;
     case IR_MINUS:
       moveThroughSetTypeMinus();
@@ -34,7 +40,7 @@ void moveThroughSetTypeMinus() {
 }
 
 void moveThroughSetTypePlus() {
-  if (curr_menuSetType_index < menuZoneLength - 1)
+  if (curr_menuSetType_index < zoneTypesLength - 1)
   {
     curr_menuSetType_index++;
     clearRow(1);

@@ -1,9 +1,13 @@
-void menuDateTime() {
-  clearRow(0);
+void initializeDateTimeMenu() {
+ clearRow(0);
   clearRow(1);
   lcd.setCursor(0, 0);
   lcd.print ("DATETIME MENU");
-  Serial.println("date time");
+ 
+}
+void menuDateTime() {
+ 
+  //Serial.println("date time");
 
   switch (results.value) {
 

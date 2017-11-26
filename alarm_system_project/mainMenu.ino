@@ -4,27 +4,29 @@ void mainMENU() {
       switch (curr_menu_index) {
         case 0:
           menu_number = MENU_DATETIME;
-          checkMENU();
+          initializeDateTimeMenu();
           break;
         case 1:
           menu_number = MENU_ZONE1;
           initializeZoneMenu(1);
-          checkMENU();
+          Serial.println("test");
+          Serial.println(menu_number);
+          
           break;
         case 2:
           menu_number = MENU_ZONE2;
           initializeZoneMenu(2);
-          checkMENU();
+          
           break;
         case 3:
           menu_number = MENU_ZONE3;
           initializeZoneMenu(3);
-          checkMENU();
+          
           break;
         case 4:
           menu_number = MENU_ZONE4;
           initializeZoneMenu(4);
-          checkMENU();
+          
           break;
       }
       break;

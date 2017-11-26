@@ -33,7 +33,7 @@
 
 
 int menu_number = MENU_MAIN;
-int menuZone_number = MENU_ZONESUB1;
+
 
 void clearRow(int r) {
   lcd.setCursor (0, r);
@@ -87,6 +87,7 @@ void checkMENU() {
       break;
     case MENU_ZONE1:
       menuZone(1);
+      Serial.println(menu_number);
       break;
     case MENU_ZONE2:
       menuZone(2);
@@ -97,31 +98,27 @@ void checkMENU() {
     case MENU_ZONE4:
       menuZone(4);
       break;
-  }
-}
-
-void checkZoneSubMENU() {
-  switch (menuZone_number) {
     case MENU_ZONESUB1:
      setTypeMenu();
       break;
     case MENU_ZONESUB2:
-      
+     
       break;
-    case MENU_ZONESUB3:
-      
+     case MENU_ZONESUB3:
+     
       break;
-    case MENU_ZONESUB4:
-      
+     case MENU_ZONESUB4:
+    
       break;
-    case MENU_ZONESUB5:
-      
+      case MENU_ZONESUB5:
+    
       break;
-    case MENU_ZONESUB6:
-      
+      case MENU_ZONESUB6:
+     
       break;
   }
 }
+
 
 
 
