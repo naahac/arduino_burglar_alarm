@@ -38,6 +38,18 @@
 #define DATETIME_ROW 0
 
 
+#define  MENU_MAIN 0
+#define  MENU_DATETIME 1
+#define  MENU_ZONE1 2
+#define  MENU_ZONE2 3
+#define  MENU_ZONE3 4
+#define  MENU_ZONE4 5
+#define  MENU_ZONESUB1 6
+#define  MENU_ZONESUB2 7
+#define  MENU_ZONESUB3 8
+#define  MENU_ZONESUB4 9
+#define  MENU_ZONESUB5 10
+#define  MENU_ZONESUB6 11
 
 typedef struct zone {
   int pin = 0;
@@ -67,8 +79,8 @@ typedef struct alarm_log {
 };
 
 //Variables for date and time
-volatile int current_time = DEFAULT_TIME;
-int current_date = DEFAULT_DATE;
+volatile long current_time = DEFAULT_TIME;
+long current_date = DEFAULT_DATE;
 
 //EEPROM
 int eeAdress = 0;
@@ -87,6 +99,9 @@ byte isAlarmTurnedOn = 0;
 char enteredPin[5];
 int enteredPinIndex = 0;
 zone zones[4];
+
+//Index of current menu
+int menu_number = MENU_MAIN;
 
 void setZones() {
   zones[0].pin = PIN_ZONE_3;
@@ -183,9 +198,13 @@ void loop() {
 
 ISR (TIMER1_COMPA_vect) {
   current_time++;
-  if (current_time >= 24 * 60 * 60) {
+  if (current_time >= (long)24 * 60 * 60) {
+    Serial.println("I have increased day");
     current_date++;
     current_time = 0;
+  }
+  if(menu_number==MENU_MAIN){
+    printDateTime();
   }
   increaseEntryExitTimer();
 }

@@ -18,21 +18,9 @@
 #define  IR_REW     0xff22dd
 #define  IR_FF      0xff02fd
 
-#define  MENU_MAIN 0
-#define  MENU_DATETIME 1
-#define  MENU_ZONE1 2
-#define  MENU_ZONE2 3
-#define  MENU_ZONE3 4
-#define  MENU_ZONE4 5
-#define  MENU_ZONESUB1 6
-#define  MENU_ZONESUB2 7
-#define  MENU_ZONESUB3 8
-#define  MENU_ZONESUB4 9
-#define  MENU_ZONESUB5 10
-#define  MENU_ZONESUB6 11
 
 
-int menu_number = MENU_MAIN;
+
 
 void setMainMenu() {
   lcd.setCursor(0, 0);

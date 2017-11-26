@@ -6,8 +6,8 @@
 // if approved while editing (jump to next || finish and approve)
 
 
-int new_time;
-int new_date;
+long new_time;
+long new_date;
 
 char months[12] = {31,30,31,28,31,30,31,31,30,31,30,31};
 
@@ -63,6 +63,12 @@ char getIRInput(){
 }
 
 
+long absolute(long num){
+  if(num<0)
+    num*=-1;
+  return num;
+}
+
 char digitToChar(char num){
     
     //Serial.println(num+48);
@@ -108,7 +114,7 @@ char getTimeInput(char column,char row){  //row and column are used for setting 
 
 void setHours(){
 
-  char input;
+  int input;
 
   
   input = getTimeInput(0,0);
@@ -119,7 +125,7 @@ void setHours(){
     input = 0;
 
 
-  new_time += input * 60*60;
+  new_time += absolute((long)input * 60*60);
   char arr[3];
   numberToCharArray(arr, input);
   printCharArray(arr, 0, 0); 
@@ -128,7 +134,7 @@ void setHours(){
 
 void setMinutes(){
 
-  char input;
+  int input;
   input = getTimeInput(3,0);
   if(input<=0){
       input = 0;
@@ -138,7 +144,7 @@ void setMinutes(){
   }
 
 
-  new_time += input * 60;
+  new_time += absolute((long)input * 60);
 
   char arr[3];
   numberToCharArray(arr, input);
@@ -148,13 +154,13 @@ void setMinutes(){
 
 void setSeconds(){
 
-    char input;
+    int input;
 
     do{
         input = getTimeInput(5,0);
     }while(input>=0 && input < 60);
 
-    new_time += input;
+    new_time += absolute((int)input);
 
     char arr[3];
     numberToCharArray(arr, input);
@@ -165,12 +171,18 @@ void setSeconds(){
 void setTime(){
 
     new_time = 0;
+    Serial.println(new_time);
     setHours();
     setMinutes();
     //setSeconds();
 
+    new_time = absolute(new_time);
+    Serial.println(new_time);
     current_time = new_time;
+    Serial.println(current_time);
 }
+
+
 
 
 void setDay(){
@@ -241,7 +253,7 @@ void setDate(){
     setDay();
     setMonth();
     setYear();
-
+    
     current_date = new_date;
 }
 
@@ -279,8 +291,8 @@ char getYear(){
 void printTime(){
     char timeString[5];
     char time_hours[3],time_minutes[3],time_seconds[3];
-    numberToCharArray(time_hours,(char)((int)current_time / (60 * 60)));
-    numberToCharArray(time_minutes, (current_time / 60) % 60);
+    numberToCharArray(time_hours,(char)((long)current_time / (long)(60 * 60)));
+    numberToCharArray(time_minutes, (char)(((long)current_time / 60) % 60));
     //numberToCharArray(time_seconds,curent_time % 60);
 
     //sprintf(timeString, "%s/%s/%s",time_hours,time_minutes,time_seconds);
