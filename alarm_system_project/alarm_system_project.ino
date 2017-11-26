@@ -1,6 +1,7 @@
 #include <LiquidCrystal.h>
 #include <IRremote.h>
 #include <stdio.h>
+#include <EEPROM.h>
 
 
 #define IR_RCV 10
@@ -110,7 +111,7 @@ void setZones() {
   zones[0].analogThreshold = 500;
 
   zones[1].pin = PIN_ZONE_1;
-  zones[1].type = DIGITAL;
+  zones[1].type = ENTRY_EXIT;
   zones[1].password[0] = '1';
   zones[1].password[1] = '2';
   zones[1].password[2] = '3';
@@ -125,8 +126,6 @@ void setZones() {
   zones[3].type = CONTINUOUS;
 }
 
-int arrayLevels[5];
-int stackIndex = 0;
 //Menu variables
 int curr_menuSetType_index = 0;
 char zoneTypes [4][16] = {"ENTRY_EXIT", "ANALOG", "DIGITAL", "CONTINUOUS"};
