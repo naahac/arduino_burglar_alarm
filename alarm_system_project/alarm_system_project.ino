@@ -1,7 +1,7 @@
 #include <LiquidCrystal.h>
 #include <IRremote.h>
 #include <stdio.h>
-#include <EEPROM.h>
+
 
 #define IR_RCV 10
 #define DEBOUNCE_TIME 5
@@ -12,10 +12,12 @@
 #define ACTIVE_LED_PIN 9
 #define PIN_ZONE_1 A5
 #define PIN_ZONE_2 A4
+#define PIN_ZONE_3 A3
+#define PIN_ZONE_4 A2
 
 //LCD constants
 #define CONTRAST_PIN 6
-#define CONTRAST_VALUE 80
+#define CONTRAST_VALUE 800
 #define RS 12
 #define EN 11
 #define D4 5
@@ -46,24 +48,30 @@ typedef struct zone {
   char password[5] = "1234";
   int entryTime = 30;
   int exitTime = 30;
+  int isTimerRunning = 0;
   volatile int timer = 0;
 
   //ANALOG PARAMETERS
   int analogThreshold = 0;
 
   //DIGITAL PARAMETERS
-  byte highToLow = 1;
+  byte highToLow = 0;
 
   //CONTINUOUS MONITORING PARAMETERS
   //byte alwaysHigh;
 };
 
+typedef struct alarm_log {
+  int time;
+  char message[20];
+};
 
 //Variables for date and time
 volatile int current_time = DEFAULT_TIME;
 int current_date = DEFAULT_DATE;
 
-
+//EEPROM
+int eeAdress = 0;
 
 // initialize the library by associating any needed LCD interface pin
 // with the arduino pin number it is connected to
@@ -81,10 +89,12 @@ int enteredPinIndex = 0;
 zone zones[4];
 
 void setZones() {
-  //zones[0].pin = 10;
-  //zones[0].type = ANALOG;
-  
-  zones[1].pin = A5;
+  zones[0].pin = PIN_ZONE_3;
+  zones[0].type = ANALOG;
+  zones[0].highToLow = 1;
+  zones[0].analogThreshold = 500;
+
+  zones[1].pin = PIN_ZONE_1;
   zones[1].type = ENTRY_EXIT;
   zones[1].password[0] = '1';
   zones[1].password[1] = '2';
@@ -93,16 +103,16 @@ void setZones() {
   zones[1].entryTime = 10;
   zones[1].exitTime = 10;
 
-  zones[2].pin = A4;
+  zones[2].pin = PIN_ZONE_2;
   zones[2].type = DIGITAL;
-  /*zones[1] = { .pin = A4, .type = DIGITAL };
-    zones[2] = { .pin = A5, .type = ENTRY_EXIT, .password = 1234, .entryTime = 30, .exitTime = 30};
-    zones[3] = { .pin = 10, .type = CONTINUOUS };*/
+
+  zones[3].pin = PIN_ZONE_4;
+  zones[3].type = CONTINUOUS;
 }
 
 //Menu variables
 int curr_menuSetType_index = 0;
-char zoneTypes [4][16] = {"ENTRY_EXIT","ANALOG","DIGITAL","CONTINUOUS"};
+char zoneTypes [4][16] = {"ENTRY_EXIT", "ANALOG", "DIGITAL", "CONTINUOUS"};
 int zoneTypesLength = 4;
 
 int curr_menuZone_index = 0;
@@ -158,6 +168,7 @@ void setAlarms() {
 
   pinMode(PIN_ZONE_1, INPUT);
   pinMode(PIN_ZONE_2, INPUT);
+  pinMode(PIN_ZONE_3, INPUT);
 }
 
 void setup() {
@@ -178,12 +189,9 @@ void loop() {
 
 ISR (TIMER1_COMPA_vect) {
   current_time++;
-
-  //refresh date-time text - if it is shown
-  
-  if(current_time>=24*60*60){
+  if (current_time >= 24 * 60 * 60) {
     current_date++;
-    current_time=0;
+    current_time = 0;
   }
   increaseEntryExitTimer();
 }

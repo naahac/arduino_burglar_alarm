@@ -2,58 +2,67 @@ void checkForAlarm() {
   for (int i = 0; i < 4; i++) {
     switch (zones[i].type) {
       case ENTRY_EXIT:
-        //Serial.println("CHECKING ENTRY_EXIT");
         if (isAlarmTurnedOn && zones[i].isTriggered != 1)
           checkEntryExit(&zones[i], digitalRead(zones[i].pin));
         break;
       case ANALOG:
-        //Serial.println("CHECKING ANALOG");
         if (isAlarmTurnedOn && zones[i].isTriggered != 1)
           checkAnalog(&zones[i], analogRead(zones[i].pin));
         break;
       case DIGITAL:
-        //Serial.println("CHECKING DIGITAL");
-        if (isAlarmTurnedOn && zones[i].isTriggered != 1)
+        if (isAlarmTurnedOn && zones[i].isTriggered != 1) {
           checkDigital(&zones[i], digitalRead(zones[i].pin));
+        }
         break;
       case CONTINUOUS:
-        //Serial.println("CHECKING CONTINUOUS");
         //We don't have to check if the alarm is turned on for continuous zone
-        if (zones[i].isTriggered != 1)
+        if (zones[i].isTriggered != 1) {
           checkContinuous(&zones[i], digitalRead(zones[i].pin));
+        }
         break;
     }
   }
 }
 
 void checkAnalog(zone *zone, int value) {
-
+    if ((zone -> highToLow == 1 && value < zone -> analogThreshold) || (zone -> highToLow == 0 && value >= zone -> analogThreshold)) {
+    zone -> isTriggered = 1;
+    triggerAlarm();
+  }
 }
 
 void checkEntryExit(zone *zone, int value) {
-  //TODO - if triggered -> start timer -> enable user to enter PIN
+  //TODO - if triggered -> start timer
   //        if timer runs out sound the alarm
   //Serial.print("timer: "); Serial.print(zone -> timer); Serial.println(zone -> entryTime);
-  if (zone -> isTriggered == 1 && zone -> timer >= zone -> entryTime) {
+  if (zone -> isTimerRunning == 1 && zone -> timer >= zone -> entryTime) {
     //if door is opened and timer is more than entry time trigger alarm
     zone -> timer = 0;
+    zone -> isTimerRunning = 0;
+    Serial.println("E_E.");
     triggerAlarm();
-    zone -> isTriggered = 0;
-  } else if (value == HIGH && zone -> isTriggered == 0) {
+    zone -> isTriggered = 1;
+  } else if (value == HIGH && zone -> isTimerRunning == 0) {
     Serial.println("HIGH");
     zone -> timer = 0;
-    zone -> isTriggered = 1;//set flag that the door was opened
+    zone -> isTimerRunning = 1;//set flag that the door was opened
   }
 }
 
 void checkDigital(zone *zone, int value) {
   if ((zone -> highToLow == 1 && value == LOW) || (zone -> highToLow == 0 && value == HIGH)) {
+    Serial.print(zone -> highToLow); Serial.print(";"); Serial.print(value); Serial.println("Digital.");
+    zone -> isTriggered = 1;
     triggerAlarm();
   }
 }
 
 void checkContinuous(zone *zone, bool value) {
   if ((zone -> highToLow == 1 && value == LOW) || (zone -> highToLow == 0 && value == HIGH)) {
+    Serial.println("Cont.");
+    zone -> isTriggered = 1;
+    showPinEnterScreen();
+    isAlarmTriggered = 1;
     triggerAlarm();
   }
 }
@@ -64,12 +73,20 @@ void triggerAlarm() {
   digitalWrite(ALARM_LED_PIN, HIGH);
 }
 
+void resetAlarmZones() {
+  for (int i = 0; i < 4; i++) {
+    zones[i].isTimerRunning = 0;
+    zones[i].isTriggered = 0;
+  }
+}
+
 void deactivateAlarm() {
   Serial.println("ALARM turned off!");
   isAlarmTurnedOn = 0;
   isAlarmTriggered = 0;
   digitalWrite(ALARM_LED_PIN, LOW);
   digitalWrite(ACTIVE_LED_PIN, LOW);
+  resetAlarmZones();
   setMainMenu();
 }
 
@@ -113,15 +130,11 @@ void checkPin() {
 }
 
 void enterPIN() {
-  //TODO enter pin logic
   if (enteredPinIndex >= 4) {
     checkPin();
     enteredPinIndex = 0;
   } else {
     switch (results.value) {
-      case IR_ON_OFF:
-        deactivateAlarm();
-        break;
       case IR_0:
         addPinToArray('0');
         break;
@@ -156,18 +169,15 @@ void enterPIN() {
   }
 }
 
-/*bool compareArrays(char[] first, char[] second) {
-  if( strcmp(test, test2) == 0)
-  {
-    printf("equal");
+void saveLogToEEPROM(zone *zone){
+  
   }
-  }*/
 
 void increaseEntryExitTimer() {
   for (int i = 0; i < 4; i++) {
     switch (zones[i].type) {
       case ENTRY_EXIT:
-        if (zones[i].isTriggered == 1) {
+        if (zones[i].isTimerRunning == 1) {
           zones[i].timer++;
           Serial.print(zones[i].pin);
           Serial.print(" ...... Timer runing : ");
@@ -177,3 +187,4 @@ void increaseEntryExitTimer() {
     }
   }
 }
+
