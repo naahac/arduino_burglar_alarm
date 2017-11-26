@@ -26,7 +26,7 @@
 #define  MENU_ZONE3 4
 #define  MENU_ZONE4 5
 
-  
+
 
 int menu_number = MENU_MAIN;
 
@@ -42,106 +42,41 @@ void decodeIR() {
 
   if (irrecv.decode(&results)) {
     Serial.println(results.value);
+    Serial.println(menu_number);
+    checkMENU();
 
-  checkMENU();
-   
-   irrecv.resume(); // Receive the next value
+    irrecv.resume(); // Receive the next value
   }
-  
+
 }
 
-void checkMENU(){
+void checkMENU() {
 
-   if(menu_number == MENU_MAIN){
-        mainMENU();
-    }
-    else if (menu_number== MENU_DATETIME){
-      clearRow(0);
-      clearRow(1);
-      lcd.setCursor(0,0);
-      lcd.print ("DATETIME MENU");
-      Serial.println("date time");
-    }
-
-    else if (menu_number== MENU_ZONE1){
-      clearRow(0);
-      clearRow(1);
-      lcd.setCursor(0,0);
-      lcd.print ("ZONE 1 MENU");
-      Serial.println("zone1");
-    }
-    
-    else if (menu_number== MENU_ZONE2){
-      
-    }
-
-    else if (menu_number== MENU_ZONE3){
-      
-    }
-
-    else if (menu_number== MENU_ZONE4){
-      
-    }
+  if (menu_number == MENU_MAIN) {
+    mainMENU();
+  }
+  else if (menu_number == MENU_DATETIME) {
+    menuDateTime();
+  }
+  else if (menu_number == MENU_ZONE1) {
+    menuZone(1);
+  }
+  else if (menu_number == MENU_ZONE2) {
+    menuZone(2);
+  }
+  else if (menu_number == MENU_ZONE3) {
+    menuZone(3);
+  }
+  else if (menu_number == MENU_ZONE4) {
+    menuZone(4);
+  }
 }
-void mainMENU(){
 
-    switch (results.value) {
-    
-      case IR_EQ:
-         if (curr_menu_index == 0)
-        {
 
-         menu_number = MENU_DATETIME;
-         
-         checkMENU();
-         
-        }
-        else if (curr_menu_index == 1){
-         menu_number = MENU_ZONE1;
-         
-         checkMENU();
-        }
-        else if (curr_menu_index == 2){
-         menu_number = MENU_ZONE3;
-         
-         checkMENU();
-        }
-        else if (curr_menu_index == 3){
-         menu_number = MENU_ZONE3;
-         
-         checkMENU();
-        }
-        else if (curr_menu_index == 4){
-         menu_number = MENU_ZONE4;
-         
-         checkMENU();
-        }
-        break;
-       
-      
-      case IR_MINUS:
-        if (curr_menu_index > 0)
-        {
-          curr_menu_index--;
-          clearRow(1);
-          lcd.setCursor(0, 1);
-          lcd.print(menu[curr_menu_index]);
-        }
-        break;
-      case IR_PLUS:
-        if (curr_menu_index < menuLength - 1)
-        {
-          curr_menu_index++;
-          clearRow(1);
-          lcd.setCursor(0, 1);
-          lcd.print(menu[curr_menu_index]);
-          
-        }
-        break;
-    
-    }
-     
-}
+
+
+
+
 
 
 

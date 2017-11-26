@@ -24,6 +24,14 @@
 #define DIGITAL 3
 #define CONTINUOUS 4
 
+
+#define DEFAULT_TIME 4862
+#define DEFAULT_DATE 2389
+#define DAYS_OF_YEAR 365
+#define DATETIME_ROW 0
+
+
+
 typedef struct zone {
   int pin;
   int type;
@@ -42,6 +50,13 @@ typedef struct zone {
   bool high_to_low;
 };
 
+
+//Variables for date and time
+volatile int current_time = DEFAULT_TIME;
+int current_date = DEFAULT_DATE;
+
+
+
 // initialize the library by associating any needed LCD interface pin
 // with the arduino pin number it is connected to
 //const int rs = 12, en = 11, d4 = 5, d5 = 4, d6 = 3, d7 = 2;
@@ -53,6 +68,9 @@ decode_results results;
 
 zone zones[4];
 
+int curr_menuZone_index = 0;
+int menuZoneLength = 6;
+char menuZones[6][16] = {"Set Type", "Password", "wait_time", "analog_t", "active_h_l","high_to_l"};
 int curr_menu_index = 0;
 int menuLength = 5;
 char menu[5][16] = {"Set time", "Alarm Zone 1", "Alarm Zone 2", "Alarm Zone 3", "Alarm Zone 4"};
@@ -74,12 +92,13 @@ void setupLCD() {
   // set up the LCD's number of columns and rows:
   lcd.begin(16, 2);
   // Print a message to the LCD.
-  lcd.print("hh/mm - dd/mm/yy");
-  //printDateTime();
 
-  lcd.setCursor(0,1);
+  lcd.print("hh/mm - dd/mm/yy");
+  printDateTime();
+ 
+  lcd.setCursor(0, 1);
   lcd.print(menu[0]);
-  
+
 }
 
 void setupTimer() {
@@ -109,6 +128,7 @@ void setup() {
   setupLCD();
   setupIR();
   setZones();
+  setDateTime();
   //pinMode(BUZZER,OUTPUT);
 }
 
@@ -116,17 +136,21 @@ void setup() {
 
 void loop() {
   decodeIR();
-  checkForAlarm();
+//  checkForAlarm();
   //tone(BUZZER,1000);
 }
 
 ISR (TIMER1_COMPA_vect) {
   lcd.setCursor(0, 1);
   /*
-  lcd.print(count);
+    lcd.print(count);
   */
   //Serial.println(count);
-  count++;
+  current_time++;
+  if(current_time>=24*60*60){
+    current_date++;
+    current_time=0;
+  }
 }
 
 boolean debounceRead(byte input) {
