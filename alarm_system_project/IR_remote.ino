@@ -96,7 +96,6 @@ void checkMENU() {
       break;
     case MENU_ZONE1:
       menuZone(1);
-      Serial.println(menu_number);
       break;
     case MENU_ZONE2:
       menuZone(2);

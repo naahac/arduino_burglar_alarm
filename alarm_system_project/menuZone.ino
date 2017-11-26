@@ -5,7 +5,8 @@ void initializeZoneMenu(int zoneNumber) {
   lcd.print (zoneNumber);
   lcd.setCursor(0, 1);
   lcd.print(menuZones[0]);
-  //Serial.println(zoneNumber);
+  arrayLevels[1]=zoneNumber;
+
 }
 
 
@@ -18,32 +19,32 @@ void menuZone(int zoneNumber) {
         case 0:
           menu_number = MENU_ZONESUB1;
           initializeZoneSubMenu();
-          checkMENU();
+          //checkMENU();
           break;
         case 1:
           menu_number = MENU_ZONESUB2;
           initializeZoneSubMenu();
-          checkMENU();
+          //checkMENU();
           break;
         case 2:
           menu_number = MENU_ZONESUB3;
           initializeZoneSubMenu();
-          checkMENU();
+          //checkMENU();
           break;
         case 3:
           menu_number = MENU_ZONESUB4;
           initializeZoneSubMenu();
-          checkMENU();
+          //checkMENU();
           break;
         case 4:
           menu_number = MENU_ZONESUB5;
           initializeZoneSubMenu();
-          checkMENU();
+          //checkMENU();
           break;
         case 5:
           menu_number = MENU_ZONESUB6;
           initializeZoneSubMenu();
-          checkMENU();
+          //checkMENU();
           break;
       }
       break;

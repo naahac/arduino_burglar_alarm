@@ -1,6 +1,8 @@
 void mainMENU() {
   switch (results.value) {
     case IR_EQ:
+      arrayLevels[0]=MENU_MAIN;
+      stackIndex=1;
       switch (curr_menu_index) {
         case 0:
           menu_number = MENU_DATETIME;
