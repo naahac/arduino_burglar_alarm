@@ -12,13 +12,14 @@ void setTypeMenu() {
 
     case IR_EQ:
       {
-     
+
+          
       }
       break;
     case IR_REW:
-      //menu_number = MENU_MAIN;
-     //curr_menuZone_index = 0;
-      //void initializeZoneMenu(int zoneNumber);
+      menu_number = MENU_MAIN;
+      curr_menuZone_index = 0;
+      void initializeZoneMenu(int zoneNumber);
       break;
     case IR_MINUS:
       moveThroughSetTypeMinus();
