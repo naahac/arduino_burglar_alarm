@@ -1,8 +1,8 @@
-void initializeZoneSubMenu() {
+void initializeTypeMenu() {
   clearRow(0);
   clearRow(1);
   lcd.setCursor(0, 0);
-  lcd.print ("ZONE SUB MENU");
+  lcd.print ("ZONE TYPE");
   lcd.setCursor(0, 1);
   lcd.print(zoneTypes[0]);
 
@@ -12,15 +12,12 @@ void setTypeMenu() {
     case IR_EQ:
       switch (curr_menuSetType_index) {
         case 0:
-
           zones[arrayLevels[1]-1].type = ENTRY_EXIT;
           //Serial.println(zones[arrayLevels[1]].type );
           break;
         case 1:
           zones[arrayLevels[1] - 1].type = ANALOG;
-          
           break;
-          
         case 2:
           zones[arrayLevels[1] - 1].type = DIGITAL;
           break;

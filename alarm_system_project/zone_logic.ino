@@ -25,7 +25,7 @@ void checkForAlarm() {
 }
 
 void checkAnalog(zone *zone, int value) {
-    if ((zone -> highToLow == 1 && value < zone -> analogThreshold) || (zone -> highToLow == 0 && value >= zone -> analogThreshold)) {
+  if ((zone -> highToLow == 1 && value < zone -> analogThreshold) || (zone -> highToLow == 0 && value >= zone -> analogThreshold)) {
     zone -> isTriggered = 1;
     triggerAlarm();
   }
@@ -54,6 +54,7 @@ void checkDigital(zone *zone, int value) {
     Serial.print(zone -> highToLow); Serial.print(";"); Serial.print(value); Serial.println("Digital.");
     zone -> isTriggered = 1;
     triggerAlarm();
+    saveLogToEEPROM(zone -> type);
   }
 }
 
@@ -64,6 +65,7 @@ void checkContinuous(zone *zone, bool value) {
     showPinEnterScreen();
     isAlarmTriggered = 1;
     triggerAlarm();
+    saveLogToEEPROM(zone -> type);
   }
 }
 
@@ -114,18 +116,10 @@ void addPinToArray(char digit) {
 void checkPin() {
   Serial.println("Check PIN");
   //find first entry exit zone
-  for (int i = 0; i < 4; i++) {
-    switch (zones[i].type) {
-      case ENTRY_EXIT:
-        Serial.println(enteredPin);
-        Serial.println(zones[i].password);
-        if (strcmp(zones[i].password, enteredPin) == 0) {
-          deactivateAlarm();
-        } else {
-          clearRow(1);
-        }
-        break;
-    }
+  if (strcmp(password, enteredPin) == 0) {
+    deactivateAlarm();
+  } else {
+    clearRow(1);
   }
 }
 
@@ -169,9 +163,14 @@ void enterPIN() {
   }
 }
 
-void saveLogToEEPROM(zone *zone){
-  
-  }
+void saveLogToEEPROM(int type) {
+  alarm_log logEntry;
+  logEntry.type = type;
+  logEntry.time = current_time;
+  logEntry.date = current_date;
+  EEPROM.put(eeAdress, logEntry);
+  eeAdress += sizeof(logEntry);
+}
 
 void increaseEntryExitTimer() {
   for (int i = 0; i < 4; i++) {

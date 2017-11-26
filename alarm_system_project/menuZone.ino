@@ -5,46 +5,34 @@ void initializeZoneMenu(int zoneNumber) {
   lcd.print (zoneNumber);
   lcd.setCursor(0, 1);
   lcd.print(menuZones[0]);
-  arrayLevels[1]=zoneNumber;
+  arrayLevels[1] = zoneNumber;
 
 }
-
-
 
 void menuZone(int zoneNumber) {
   switch (results.value) {
 
     case IR_EQ:
-          switch (curr_menuZone_index) {
+      switch (curr_menuZone_index) {
         case 0:
-          menu_number = MENU_ZONESUB1;
-          initializeZoneSubMenu();
-          //checkMENU();
+          menu_number = MENU_ZONE_TYPE;
+          initializeTypeMenu();
           break;
         case 1:
-          menu_number = MENU_ZONESUB2;
-          initializeZoneSubMenu();
-          //checkMENU();
+          menu_number = MENU_PASSWORD;
+          initializePasswordSetMenu();
           break;
         case 2:
-          menu_number = MENU_ZONESUB3;
-          initializeZoneSubMenu();
-          //checkMENU();
+          menu_number = MENU_HIGH_LOW;
+          initializeHighLowMenu();
           break;
         case 3:
-          menu_number = MENU_ZONESUB4;
-          initializeZoneSubMenu();
-          //checkMENU();
+          menu_number = MENU_ANALOG_THRESHOLD;
+          initializeAnalogMenu();
           break;
         case 4:
-          menu_number = MENU_ZONESUB5;
-          initializeZoneSubMenu();
-          //checkMENU();
-          break;
-        case 5:
-          menu_number = MENU_ZONESUB6;
-          initializeZoneSubMenu();
-          //checkMENU();
+          menu_number = MENU_WAIT_TIME;
+          initializeWaitTimeMenu();
           break;
       }
       break;

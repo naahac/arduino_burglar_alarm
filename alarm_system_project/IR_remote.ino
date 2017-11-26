@@ -25,7 +25,7 @@
 void setMainMenu() {
   lcd.setCursor(0, 0);
   printDateTime();
-  
+
   lcd.setCursor(0, 1);
   lcd.print(menu[0]);
 
@@ -94,23 +94,20 @@ void checkMENU() {
     case MENU_ZONE4:
       menuZone(4);
       break;
-    case MENU_ZONESUB1:
-     setTypeMenu();
+    case MENU_ZONE_TYPE:
+      setTypeMenu();
       break;
-    case MENU_ZONESUB2:
-     
+    case MENU_PASSWORD:
+      setPasswordMenu();
       break;
-     case MENU_ZONESUB3:
-     
+    case MENU_HIGH_LOW:
+      setHighLowMenu();
       break;
-     case MENU_ZONESUB4:
-    
+    case MENU_ANALOG_THRESHOLD:
+      setAnalogMenu();
       break;
-      case MENU_ZONESUB5:
-    
-      break;
-      case MENU_ZONESUB6:
-     
+    case MENU_WAIT_TIME:
+      setWaitTimeMenu();
       break;
   }
 }
