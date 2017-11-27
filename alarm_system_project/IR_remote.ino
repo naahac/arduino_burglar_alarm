@@ -38,14 +38,17 @@ void clearRow(int r) {
 
 void decodeIR() {
   if (irrecv.decode(&results)) {
-    Serial.println(results.value);
-    Serial.println(menu_number);
+    //Serial.println(results.value);
+    //Serial.println(menu_number);
     if (isAlarmTurnedOn || isAlarmTriggered) {
       enterPIN();
     } else {
       switch (results.value) {
         case IR_MODE:
           startActivationTimer();
+          break;
+        case IR_MUTE:
+          saveToEEPROM();
           break;
         default:
           checkMENU();

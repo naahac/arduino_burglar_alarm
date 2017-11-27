@@ -6,6 +6,10 @@ void initializePasswordSetMenu() {
   enteredPinIndex = 0;
 }
 void setPasswordMenu() {
+  if (enteredPinIndex >= 4) {
+    goBack();
+    return;
+  }
   switch (results.value) {
     case IR_REW:
       goBack();

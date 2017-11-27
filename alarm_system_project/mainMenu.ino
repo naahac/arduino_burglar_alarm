@@ -10,8 +10,6 @@ void mainMENU() {
         case 1:
           menu_number = MENU_ZONE1;
           initializeZoneMenu(1);
-          Serial.println("test");
-          Serial.println(menu_number);
           break;
         case 2:
           menu_number = MENU_ZONE2;

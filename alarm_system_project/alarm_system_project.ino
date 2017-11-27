@@ -103,6 +103,35 @@ zone zones[4];
 
 //Index of current menu
 int menu_number = MENU_MAIN;
+int arrayLevels[5];
+
+void saveToEEPROM() {
+  eeAdress = 0;
+  for (int i = 0; i < 4; i++) {
+    EEPROM.put(eeAdress, zones[i]);
+    eeAdress += sizeof(zones[i]);
+  }
+  EEPROM.put(eeAdress, current_time);
+  eeAdress += sizeof(current_time);
+  
+  EEPROM.put(eeAdress, current_date);
+  eeAdress += sizeof(current_date);
+}
+
+void readFromEEPROM() {
+  eeAdress = 0;
+  for (int i = 0; i < 4; i++) {
+    //zones[i] = (zone)
+    zone temp;
+    EEPROM.get(eeAdress, zones[i]);
+    eeAdress += sizeof(zones[i]);
+  }
+  EEPROM.get(eeAdress, current_time);
+  eeAdress += sizeof(current_time);
+
+  EEPROM.get(eeAdress, current_date);
+  eeAdress += sizeof(current_date);
+}
 
 void setZones() {
   zones[0].pin = PIN_ZONE_1;
@@ -110,20 +139,17 @@ void setZones() {
   zones[0].highToLow = 1;
   zones[0].analogThreshold = 500;
 
-  zones[1].pin = PIN_ZONE_1;
-  zones[1].type = ENTRY_EXIT;
-  /*zones[1].password[0] = '1';
-    zones[1].password[1] = '2';
-    zones[1].password[2] = '3';
-    zones[1].password[3] = '4';*/
-  zones[1].entryTime = 10;
-  zones[1].exitTime = 10;
+  zones[2].pin = PIN_ZONE_2;
+  zones[2].type = ENTRY_EXIT;
+  zones[2].entryTime = 3;
+  zones[2].exitTime = 3;
 
-  zones[2].pin = PIN_ZONE_3;
-  zones[2].type = DIGITAL;
+  zones[1].pin = PIN_ZONE_3;
+  zones[1].type = DIGITAL;
 
   zones[3].pin = PIN_ZONE_4;
   zones[3].type = CONTINUOUS;
+  zones[3].highToLow = 1;
 }
 
 //Menu variables
@@ -181,12 +207,14 @@ void setAlarms() {
 
 void setup() {
   Serial.begin(9600);
+  readFromEEPROM();
   cli(); //Disable global interrupts
   setupTimer();
   sei(); //Enable Global Interrupts
   setupLCD();
   setupIR();
-  setZones();
+  if(zones[0].pin <= 0)
+    setZones();
   setAlarms();
 }
 

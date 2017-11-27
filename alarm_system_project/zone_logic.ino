@@ -43,7 +43,7 @@ void checkEntryExit(zone *zone, int value) {
     triggerAlarm();
     zone -> isTriggered = 1;
   } else if (value == HIGH && zone -> isTimerRunning == 0) {
-    Serial.println("HIGH");
+    Serial.print("HIGH value -> "); Serial.println(value);
     zone -> timer = 0;
     zone -> isTimerRunning = 1;//set flag that the door was opened
   }

@@ -6,7 +6,7 @@ void initializeZoneMenu(int zoneNumber) {
   lcd.setCursor(0, 1);
   lcd.print(menuZones[0]);
   arrayLevels[1] = zoneNumber;
-
+  curr_menuZone_index = 0;
 }
 
 void menuZone(int zoneNumber) {

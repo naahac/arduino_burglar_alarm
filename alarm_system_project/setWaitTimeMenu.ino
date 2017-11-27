@@ -15,7 +15,7 @@ void setWaitTimeMenu() {
       zones[arrayLevels[1] - 1].entryTime = i;
       zones[arrayLevels[1] - 1].exitTime = i;
       Serial.println(i);
-      goBack;
+      goBack();
     case IR_REW:
       goBack();
       break;
